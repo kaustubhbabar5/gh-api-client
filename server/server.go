@@ -8,12 +8,14 @@ import (
 	"github.com/gorilla/mux"
 	"github.com/kaustubhbabar5/gh-api-client/adapters/cache"
 	"github.com/kaustubhbabar5/gh-api-client/pkg/config"
+	"github.com/kaustubhbabar5/gh-api-client/pkg/github"
 	"go.uber.org/zap"
 )
 
 type app struct {
-	router *mux.Router
-	cache  cache.Cache
+	router       *mux.Router
+	cache        cache.Cache
+	githubClient github.Client
 }
 
 //constructs http server
@@ -25,9 +27,16 @@ func New(config *config.Config, logger *zap.Logger) (*http.Server, error) {
 
 	router := mux.NewRouter()
 
+	httpClient := &http.Client{
+		Timeout: time.Duration(config.ReadTimeout) * time.Second,
+	}
+
+	githubClient := github.NewClient(httpClient, config.GithubAuthToken)
+
 	app := app{
 		router,
 		cache,
+		githubClient,
 	}
 
 	app.RegisterHealthRoutes()

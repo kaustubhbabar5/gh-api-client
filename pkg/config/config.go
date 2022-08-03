@@ -10,23 +10,24 @@ import (
 
 // holds the app configuration
 type Config struct {
-	LogLevel      string `mapstructure:"LOG_LEVEL"`
-	LogTimeFormat string `mapstructure:"LOG_TIME_FORMAT"`
-	Host          string `mapstructure:"HOST"`
-	Port          string `mapstructure:"PORT"`
-	RedisUrl      string `mapstructure:"REDIS_URL"`
-	RedisPassword string `mapstructure:"REDIS_PASSWORD"`
-	ReadTimeout   int    `mapstructure:"READ_TIMEOUT"`
-	WriteTimeout  int    `mapstructure:"WRITE_TIMEOUT"`
+	LogLevel        string `mapstructure:"LOG_LEVEL"`
+	LogTimeFormat   string `mapstructure:"LOG_TIME_FORMAT"`
+	Host            string `mapstructure:"HOST"`
+	Port            string `mapstructure:"PORT"`
+	RedisUrl        string `mapstructure:"REDIS_URL"`
+	RedisPassword   string `mapstructure:"REDIS_PASSWORD"`
+	ReadTimeout     int    `mapstructure:"READ_TIMEOUT"`
+	WriteTimeout    int    `mapstructure:"WRITE_TIMEOUT"`
+	GithubAuthToken string `mapstructure:"GITHUB_AUTH_TOKEN"`
 }
 
 // discovers and loads the configuration file
-func Load(logger *zap.Logger) (*Config, error) {
+func Load(path string, logger *zap.Logger) (*Config, error) {
 	setDefaults()
 
 	viper.SetConfigName(".env")
 	viper.SetConfigType("dotenv")
-	viper.AddConfigPath(".")
+	viper.AddConfigPath(path)
 	viper.AutomaticEnv()
 
 	err := viper.ReadInConfig()

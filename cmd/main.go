@@ -10,13 +10,13 @@ import (
 )
 
 func main() {
-	logger, err := logger.New()
+	logger, err := logger.NewProduction()
 	if err != nil {
 		log.Fatalf("failed to create logger %s", err.Error())
 	}
 	defer logger.Sync()
 
-	config, err := config.Load(logger)
+	config, err := config.Load(".", logger)
 	if err != nil {
 		logger.Error("failed to load config", zap.Error(err))
 	}
