@@ -43,6 +43,33 @@ func TestGithubTestSuite(t *testing.T) {
 	suite.Run(t, new(GithubTestSuite))
 }
 
+func (s *GithubTestSuite) TestNewClient() {
+	logger, err := logger.NewDevelopment()
+	if err != nil {
+		log.Fatalln(err)
+	}
+
+	// TODO: use different config for testing
+	config, err := config.Load("../..", logger)
+	if err != nil {
+		logger.Sugar().Error(err)
+	}
+
+	httpClient := &http.Client{
+		Timeout: time.Duration(config.ReadTimeout) * time.Second,
+	}
+
+	githubClient := NewClient(httpClient, config.GithubAuthToken)
+
+	s.Equal(BASE_URL_STRING, githubClient.baseURL.String())
+
+	githubClient2 := NewClient(httpClient, config.GithubAuthToken)
+
+	if githubClient == githubClient2 {
+		s.Fail("both clients should differ, but they are same")
+	}
+}
+
 func (s *GithubTestSuite) TestGetUser() {
 	testCases := []struct {
 		testName     string
@@ -81,6 +108,60 @@ func (s *GithubTestSuite) TestGetUser() {
 			s.Nil(err)
 			s.Equal(true, reflect.DeepEqual(user, testCase.expectedUser), fmt.Sprintf("expected %v, got %v", testCase.expectedUser, user))
 
+		})
+	}
+}
+
+func (s *GithubTestSuite) TestGetUsers() {
+	testCases := []struct {
+		testName      string
+		usernames     []string
+		userCount     int
+		errCount      int
+		notFoundCount int
+	}{
+		{
+			usernames: []string{
+				"kaustubhbabar5",
+				"dhruvikn",
+				"exagil",
+				"GotamDahiya",
+				"manya28",
+				"Mayurkumawat012",
+				"Shubham6147",
+				"suryakanigolla",
+				"vgnh",
+				"nikhil-kawa",
+			},
+			userCount:     10,
+			errCount:      0,
+			notFoundCount: 0,
+		},
+		{
+			usernames: []string{
+				"kaustubhbabar5",
+				"dhruvikn",
+				"exagil--invalid",
+				"GotamDahiya--invalid",
+				"manya28",
+				"Mayurkumawat012--invalid",
+				"Shubham6147",
+				"suryakanigolla",
+				"vgnh",
+				"nikhil-kawa-invalid",
+			},
+			userCount:     6,
+			errCount:      0,
+			notFoundCount: 4,
+		},
+	}
+
+	for _, testCase := range testCases {
+		s.Run(testCase.testName, func() {
+			user, usernamesNotFound, errs := s.ghClient.GetUsers(testCase.usernames)
+			s.Equal(testCase.errCount, len(errs))
+			s.Equal(testCase.notFoundCount, len(usernamesNotFound))
+			s.Equal(testCase.userCount, len(user))
 		})
 	}
 }

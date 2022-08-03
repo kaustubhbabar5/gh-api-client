@@ -74,5 +74,50 @@ func (c *client) GetUser(username string) (User, error) {
 		return User{}, err
 	}
 	return user, nil
+}
 
+// GetUsers returns information of multiple users by their usernames
+func (c *client) GetUsers(usernames []string) (users []User, usersNotFound []string, errs []error) {
+	userCount := len(usernames)
+
+	users = make([]User, 0)
+	usersNotFound = make([]string, 0)
+	errs = make([]error, 0)
+
+	userChan := make(chan User, userCount)
+	userNotFoundChan := make(chan string, userCount)
+	errChan := make(chan error, userCount)
+
+	for _, username := range usernames {
+		go func(username string, userChan chan User, userNotFoundChan chan string, errChan chan error) {
+			user, err := c.GetUser(username)
+			if err != nil {
+				var notFoundErr *cerrors.NotFound
+				if errors.As(err, &notFoundErr) {
+					userNotFoundChan <- username
+					return
+				}
+
+				errChan <- fmt.Errorf("failed to get information for username:%s error:%w", username, err)
+				return
+			}
+
+			userChan <- user
+		}(username, userChan, userNotFoundChan, errChan)
+	}
+
+	for i := 1; i <= userCount; i++ {
+		select {
+		case user := <-userChan:
+			users = append(users, user)
+
+		case err := <-errChan:
+			errs = append(errs, err)
+
+		case username := <-userNotFoundChan:
+			usersNotFound = append(usersNotFound, username)
+		}
+	}
+
+	return
 }
