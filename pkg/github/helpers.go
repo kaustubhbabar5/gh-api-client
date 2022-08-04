@@ -53,7 +53,7 @@ func validateResponse(res *http.Response) ([]byte, error) {
 	}
 
 	if res.StatusCode != http.StatusOK && res.StatusCode != http.StatusNotFound {
-		return nil, fmt.Errorf("http request failed with status_code:%d and body :%s", res.StatusCode, body)
+		return nil, fmt.Errorf("http request failed with status_code:%d", res.StatusCode)
 	}
 	return body, nil
 }

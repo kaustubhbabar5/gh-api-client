@@ -33,7 +33,6 @@ func (s *GithubTestSuite) SetupSuite() {
 		logger.Sugar().Error(err)
 		return
 	}
-
 	httpClient := &http.Client{
 		Timeout: time.Duration(config.ReadTimeout) * time.Second,
 	}
@@ -87,7 +86,7 @@ func (s *GithubTestSuite) TestGetUser() {
 				Login:       "kaustubhbabar5",
 				Company:     "",
 				Followers:   2,
-				PublicRepos: 6,
+				PublicRepos: 7,
 			},
 			errString: "",
 		},

@@ -22,18 +22,6 @@ type CacheTestSuite struct {
 	testUserInfo string
 }
 
-type Cache2 interface {
-	// takes multiple users and cache data for give duration.
-	// returns back slice of usernames for which caching operation failed and error.
-	CacheUserInfo(users []github.User, duration time.Duration) []error
-	//
-	GetUserInfo(usernames []string) (
-		users []github.User,
-		notFound []string,
-		errs []error,
-	)
-}
-
 // The SetupSuite method will be run by testify once, at the very
 // start of the testing suite, before any tests are run.
 func (s *CacheTestSuite) SetupSuite() {

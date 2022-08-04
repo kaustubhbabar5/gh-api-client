@@ -5,6 +5,7 @@ import (
 	"net/http"
 	"time"
 
+	"github.com/go-playground/validator/v10"
 	"github.com/go-redis/redis/v8"
 	"github.com/gorilla/mux"
 	"github.com/kaustubhbabar5/gh-api-client/adapters/cache"
@@ -16,6 +17,7 @@ import (
 
 type application struct {
 	logger       *zap.Logger
+	validator    *validator.Validate
 	router       *mux.Router
 	cache        *redis.Client
 	githubClient github.Client
@@ -36,8 +38,11 @@ func New(config *config.Config, logger *zap.Logger) (*http.Server, error) {
 
 	githubClient := github.NewClient(httpClient, config.GithubAuthTokenKey)
 
+	validator := validator.New()
+
 	app := application{
 		logger,
+		validator,
 		router,
 		cache,
 		githubClient,

@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"time"
 
+	"github.com/joho/godotenv"
 	"github.com/spf13/viper"
 	"go.uber.org/zap"
 )
@@ -27,13 +28,18 @@ type Config struct {
 func Load(path string, logger *zap.Logger) (*Config, error) {
 	setDefaults()
 
+	err := godotenv.Load()
+	if err != nil {
+		logger.Debug("dotenv not found", zap.Error(err))
+	}
+
 	viper.SetConfigName(".env")
 	viper.SetConfigType("dotenv")
 	viper.AddConfigPath(path)
 
 	viper.AutomaticEnv()
 
-	err := viper.ReadInConfig()
+	err = viper.ReadInConfig()
 	if err != nil {
 		var notFoundError *viper.ConfigFileNotFoundError
 		if errors.As(err, &notFoundError) {
@@ -49,6 +55,7 @@ func Load(path string, logger *zap.Logger) (*Config, error) {
 	if err != nil {
 		return nil, fmt.Errorf("viper.Unmarshal :%w", err)
 	}
+
 	return &config, nil
 }
 

@@ -6,7 +6,7 @@ import (
 )
 
 // writes response with header Content-Type : application/json and provided http status code and response body.
-func WriteJSON(w http.ResponseWriter, statusCode int, body map[string]any) {
+func WriteJSON(w http.ResponseWriter, statusCode int, body any) {
 	w.Header().Set("Content-Type", "application/json")
 
 	w.WriteHeader(statusCode)
