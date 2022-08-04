@@ -97,7 +97,7 @@ func (c *client) GetUsers(usernames []string) ( //nolint:nonamedreturns // named
 		go func(username string, userChan chan User, userNotFoundChan chan string, errChan chan error) {
 			user, err := c.GetUser(username)
 			if err != nil {
-				var notFoundErr *cerrors.NotFound
+				var notFoundErr *cerrors.NotFoundError
 				if errors.As(err, &notFoundErr) {
 					userNotFoundChan <- username
 					return

@@ -12,7 +12,7 @@ type redisCache struct {
 	client *redis.Client
 }
 
-//returns a new redis cache
+// returns a new redis cache.
 func NewRedisCache(address, password string) (*redisCache, error) {
 	rdb := redis.NewClient(&redis.Options{
 		Addr:     address,

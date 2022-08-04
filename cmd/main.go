@@ -14,7 +14,12 @@ func main() {
 	if err != nil {
 		log.Fatalf("failed to create logger %s", err.Error())
 	}
-	defer logger.Sync()
+	defer func() {
+		e := logger.Sync()
+		if e != nil {
+			log.Fatalf("failed to flush log buffer :%s", err.Error())
+		}
+	}()
 
 	config, err := config.Load(".", logger)
 	if err != nil {
@@ -31,6 +36,5 @@ func main() {
 		logger.Error("failed to start http server", zap.Error(err))
 	}
 
-	//TODO graceful shutdown
-
+	// TODO: graceful shutdown
 }

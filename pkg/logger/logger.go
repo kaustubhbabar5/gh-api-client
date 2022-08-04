@@ -6,7 +6,7 @@ import (
 	"go.uber.org/zap"
 )
 
-// builds and returns logger
+// builds and returns logger.
 func NewProduction() (*zap.Logger, error) {
 	logger, err := zap.NewProduction()
 	if err != nil {

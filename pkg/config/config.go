@@ -1,6 +1,7 @@
 package config
 
 import (
+	"errors"
 	"fmt"
 	"time"
 
@@ -10,18 +11,19 @@ import (
 
 // holds the app configuration
 type Config struct {
-	LogLevel        string `mapstructure:"LOG_LEVEL"`
-	LogTimeFormat   string `mapstructure:"LOG_TIME_FORMAT"`
-	Host            string `mapstructure:"HOST"`
-	Port            string `mapstructure:"PORT"`
-	RedisUrl        string `mapstructure:"REDIS_URL"`
-	RedisPassword   string `mapstructure:"REDIS_PASSWORD"`
-	ReadTimeout     int    `mapstructure:"READ_TIMEOUT"`
-	WriteTimeout    int    `mapstructure:"WRITE_TIMEOUT"`
-	GithubAuthToken string `mapstructure:"GITHUB_AUTH_TOKEN"`
+	LogLevel          string `mapstructure:"LOG_LEVEL"`
+	LogTimeFormat     string `mapstructure:"LOG_TIME_FORMAT"`
+	Host              string `mapstructure:"HOST"`
+	Port              string `mapstructure:"PORT"`
+	RedisURL          string `mapstructure:"REDIS_URL"`
+	RedisPassword     string `mapstructure:"REDIS_PASSWORD"`
+	ReadTimeout       int    `mapstructure:"READ_TIMEOUT"`
+	WriteTimeout      int    `mapstructure:"WRITE_TIMEOUT"`
+	ReadHeaderTimeout int    `mapstructure:"READ_HEADER_TIMEOUT"`
+	GithubAuthToken   string `mapstructure:"GITHUB_AUTH_TOKEN"`
 }
 
-// discovers and loads the configuration file
+// discovers and loads the configuration file in given path.
 func Load(path string, logger *zap.Logger) (*Config, error) {
 	setDefaults()
 
@@ -32,7 +34,8 @@ func Load(path string, logger *zap.Logger) (*Config, error) {
 
 	err := viper.ReadInConfig()
 	if err != nil {
-		_, ok := err.(viper.ConfigFileNotFoundError)
+		var notFoundError *viper.ConfigFileNotFoundError
+		ok := errors.As(err, &notFoundError)
 		if !ok {
 			return nil, fmt.Errorf("viper.ReadInConfig :%w", err)
 		}
@@ -49,11 +52,15 @@ func Load(path string, logger *zap.Logger) (*Config, error) {
 	return &config, nil
 }
 
-// loads default config
+// loads default config.
 func setDefaults() {
 	viper.SetDefault("LOG_LEVEL", zap.InfoLevel)
 	viper.SetDefault("LOG_TIME_FORMAT", time.RFC3339Nano)
 
 	viper.SetDefault("HOST", "0.0.0.0")
 	viper.SetDefault("PORT", "8080")
+
+	viper.SetDefault("WRITE_TIMEOUT", "30")
+	viper.SetDefault("READ_TIMEOUT", "30")
+	viper.SetDefault("READ_HEADER_TIMEOUT", "2")
 }

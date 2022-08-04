@@ -12,15 +12,15 @@ import (
 	"go.uber.org/zap"
 )
 
-type app struct {
+type application struct {
 	router       *mux.Router
 	cache        cache.Cache
 	githubClient github.Client
 }
 
-//constructs http server
+// constructs http server.
 func New(config *config.Config, logger *zap.Logger) (*http.Server, error) {
-	cache, err := cache.NewRedisCache(config.RedisUrl, config.RedisPassword)
+	cache, err := cache.NewRedisCache(config.RedisURL, config.RedisPassword)
 	if err != nil {
 		return nil, fmt.Errorf("cache.NewRedisCache :%w", err)
 	}
@@ -33,7 +33,7 @@ func New(config *config.Config, logger *zap.Logger) (*http.Server, error) {
 
 	githubClient := github.NewClient(httpClient, config.GithubAuthToken)
 
-	app := app{
+	app := application{
 		router,
 		cache,
 		githubClient,
@@ -42,9 +42,10 @@ func New(config *config.Config, logger *zap.Logger) (*http.Server, error) {
 	app.RegisterHealthRoutes()
 
 	return &http.Server{
-		Addr:         config.Host + ":" + config.Port,
-		ReadTimeout:  time.Duration(config.ReadTimeout) * time.Second,
-		WriteTimeout: time.Duration(config.WriteTimeout) * time.Second,
-		Handler:      app.router,
+		Addr:              config.Host + ":" + config.Port,
+		ReadTimeout:       time.Duration(config.ReadTimeout) * time.Second,
+		WriteTimeout:      time.Duration(config.WriteTimeout) * time.Second,
+		ReadHeaderTimeout: time.Duration(config.ReadHeaderTimeout) * time.Second,
+		Handler:           app.router,
 	}, nil
 }
