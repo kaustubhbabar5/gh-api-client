@@ -16,6 +16,7 @@ const (
 
 type Client interface {
 	GetUser(username string) (User, error)
+	GetUsers(usernames []string) (users []User, usersNotFound []string, errs []error)
 }
 
 type client struct {

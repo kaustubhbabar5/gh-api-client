@@ -5,22 +5,25 @@ import (
 	"net/http"
 	"time"
 
+	"github.com/go-redis/redis/v8"
 	"github.com/gorilla/mux"
 	"github.com/kaustubhbabar5/gh-api-client/adapters/cache"
 	"github.com/kaustubhbabar5/gh-api-client/pkg/config"
 	"github.com/kaustubhbabar5/gh-api-client/pkg/github"
+
 	"go.uber.org/zap"
 )
 
 type application struct {
+	logger       *zap.Logger
 	router       *mux.Router
-	cache        cache.Cache
+	cache        *redis.Client
 	githubClient github.Client
 }
 
 // constructs http server.
 func New(config *config.Config, logger *zap.Logger) (*http.Server, error) {
-	cache, err := cache.NewRedisCache(config.RedisURL, config.RedisPassword)
+	cache, err := cache.NewRedisClient(config.RedisURL, config.RedisPassword)
 	if err != nil {
 		return nil, fmt.Errorf("cache.NewRedisCache :%w", err)
 	}
@@ -34,12 +37,14 @@ func New(config *config.Config, logger *zap.Logger) (*http.Server, error) {
 	githubClient := github.NewClient(httpClient, config.GithubAuthToken)
 
 	app := application{
+		logger,
 		router,
 		cache,
 		githubClient,
 	}
 
 	app.RegisterHealthRoutes()
+	app.RegisterUserRoutes()
 
 	return &http.Server{
 		Addr:              config.Host + ":" + config.Port,

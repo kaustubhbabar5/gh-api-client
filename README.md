@@ -10,3 +10,4 @@ This is an application which provides an API to retrieve detailed information ab
     + number of followers
     + number of public repos
 + the returned users should be sorted alphabetically by name
+

@@ -24,12 +24,14 @@ func (s *GithubTestSuite) SetupSuite() {
 	logger, err := logger.NewDevelopment()
 	if err != nil {
 		log.Fatalln(err)
+		return
 	}
 
 	// TODO: use different config for testing
 	config, err := config.Load("../..", logger)
 	if err != nil {
 		logger.Sugar().Error(err)
+		return
 	}
 
 	httpClient := &http.Client{
