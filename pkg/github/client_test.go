@@ -1,4 +1,4 @@
-package github
+package github //nolint:testpackage // TODO add directive
 
 import (
 	"fmt"
@@ -61,7 +61,7 @@ func (s *GithubTestSuite) TestNewClient() {
 
 	githubClient := NewClient(httpClient, config.GithubAuthToken)
 
-	s.Equal(BASE_URL_STRING, githubClient.baseURL.String())
+	s.Equal(BaseURLString, githubClient.baseURL.String())
 
 	githubClient2 := NewClient(httpClient, config.GithubAuthToken)
 
@@ -106,8 +106,14 @@ func (s *GithubTestSuite) TestGetUser() {
 				return
 			}
 			s.Nil(err)
-			s.Equal(true, reflect.DeepEqual(user, testCase.expectedUser), fmt.Sprintf("expected %v, got %v", testCase.expectedUser, user))
-
+			s.Equal(
+				true,
+				reflect.DeepEqual(
+					user,
+					testCase.expectedUser,
+				),
+				fmt.Sprintf("expected %v, got %v", testCase.expectedUser, user),
+			)
 		})
 	}
 }

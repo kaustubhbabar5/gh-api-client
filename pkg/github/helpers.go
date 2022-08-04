@@ -30,7 +30,8 @@ func (c *client) newRequest(method, path string, body any) (*http.Request, error
 	}
 
 	if body != nil {
-		// `application/vnd.github+json` is recommended by github in API docs ref: https://docs.github.com/en/rest/users/users#get-a-user--parameters
+		// `application/vnd.github+json` is recommended by github in API docs
+		// ref: https://docs.github.com/en/rest/users/users#get-a-user--parameters
 		req.Header.Set("Content-Type", "application/vnd.github+json")
 	}
 
@@ -41,7 +42,8 @@ func (c *client) newRequest(method, path string, body any) (*http.Request, error
 	return req, nil
 }
 
-// validateResponse checks the http.Response for errors and reads the body, returns error if status code is anything other than 200 or fails to read the body
+// validateResponse checks the http.Response for errors and reads the body,
+// returns error if status code is anything other than 200 or fails to read the body.
 func validateResponse(res *http.Response) ([]byte, error) {
 	//TODO: handle rate limits errors here
 

@@ -11,7 +11,7 @@ import (
 )
 
 const (
-	BASE_URL_STRING = "https://api.github.com/"
+	BaseURLString = "https://api.github.com/"
 )
 
 type Client interface {
@@ -25,13 +25,13 @@ type client struct {
 }
 
 // creates a new github client with given http.Client and config.
-// if http Client is nil it will create a new http.Client
+// if http Client is nil it will create a new http.Client.
 func NewClient(httpClient *http.Client, authToken string) *client {
 	if httpClient == nil {
 		httpClient = &http.Client{}
 	}
 
-	baseURL, _ := url.Parse(BASE_URL_STRING)
+	baseURL, _ := url.Parse(BaseURLString)
 	authToken = fmt.Sprintf("token %s", authToken)
 
 	return &client{
@@ -42,7 +42,7 @@ func NewClient(httpClient *http.Client, authToken string) *client {
 }
 
 // Fetches information about user by username,
-// will return back with custom error `Not Found` if the user is not found
+// will return back with custom error `Not Found` if the user is not found.
 func (c *client) GetUser(username string) (User, error) {
 	if username == "" {
 		return User{}, errors.New("username empty")
@@ -58,6 +58,7 @@ func (c *client) GetUser(username string) (User, error) {
 	if err != nil {
 		return User{}, err
 	}
+	defer res.Body.Close()
 
 	body, err := validateResponse(res)
 	if err != nil {
@@ -76,8 +77,12 @@ func (c *client) GetUser(username string) (User, error) {
 	return user, nil
 }
 
-// GetUsers returns information of multiple users by their usernames
-func (c *client) GetUsers(usernames []string) (users []User, usersNotFound []string, errs []error) {
+// GetUsers returns information of multiple users by their usernames.
+func (c *client) GetUsers(usernames []string) ( //nolint:nonamedreturns // named returns serves as documentation here
+	users []User,
+	usersNotFound []string,
+	errs []error,
+) {
 	userCount := len(usernames)
 
 	users = make([]User, 0)
@@ -119,5 +124,5 @@ func (c *client) GetUsers(usernames []string) (users []User, usersNotFound []str
 		}
 	}
 
-	return
+	return //nolint:nakedret // added directive to func def
 }

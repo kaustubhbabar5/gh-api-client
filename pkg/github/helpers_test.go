@@ -1,4 +1,4 @@
-package github
+package github //nolint: testpackage // TODO: add directive
 
 import (
 	"io/ioutil"
@@ -78,5 +78,4 @@ func (s *GithubTestSuite) TestValidateResponse() {
 			s.Nil(err)
 		})
 	}
-
 }
