@@ -5,6 +5,7 @@ import (
 	"io/ioutil"
 	"net/http"
 
+	cerrors "github.com/kaustubhbabar5/gh-api-client/pkg/errors"
 	chttp "github.com/kaustubhbabar5/gh-api-client/pkg/http"
 	"go.uber.org/zap"
 )
@@ -24,6 +25,7 @@ func (h *Handler) GetUsers(w http.ResponseWriter, r *http.Request) {
 		chttp.WriteJSON(
 			w,
 			http.StatusBadRequest,
+			// TODO:
 			map[string]any{"error": "failed to read request body, please refer API docs"},
 		)
 		return
@@ -46,6 +48,11 @@ func (h *Handler) GetUsers(w http.ResponseWriter, r *http.Request) {
 	usernames := reqBodyMap["usernames"]
 
 	users, notFoundUsers, errs := h.userService.GetUsers(usernames)
+	// h.logger.Sugar().Info(users, errs, notFoundUsers)
 
-	chttp.WriteJSON(w, http.StatusOK, map[string]any{"users": users, "not_found_users": notFoundUsers, "errors": errs})
+	chttp.WriteJSON(w, http.StatusOK, map[string]any{
+		"users":           users,
+		"not_found_users": notFoundUsers,
+		"errors":          cerrors.JSONErrs(errs),
+	})
 }

@@ -23,7 +23,7 @@ type application struct {
 
 // constructs http server.
 func New(config *config.Config, logger *zap.Logger) (*http.Server, error) {
-	cache, err := cache.NewRedisClient(config.RedisURL, config.RedisPassword)
+	cache, err := cache.NewRedisClient(config.RedisURL, config.RedisPasswordKey)
 	if err != nil {
 		return nil, fmt.Errorf("cache.NewRedisCache :%w", err)
 	}
@@ -34,7 +34,7 @@ func New(config *config.Config, logger *zap.Logger) (*http.Server, error) {
 		Timeout: time.Duration(config.ReadTimeout) * time.Second,
 	}
 
-	githubClient := github.NewClient(httpClient, config.GithubAuthToken)
+	githubClient := github.NewClient(httpClient, config.GithubAuthTokenKey)
 
 	app := application{
 		logger,

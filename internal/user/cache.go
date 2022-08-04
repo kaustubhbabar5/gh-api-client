@@ -75,9 +75,10 @@ func (c *c) GetUserInfo(usernames []string) ( //nolint: nonamedreturns // TODO a
 
 	vals, err := c.rc.MGet(ctx, redisKeys...).Result()
 	if err != nil {
-		return nil, nil, []error{fmt.Errorf("c.rc.MGet :%w", err)}
+		notFound = usernames
+		errs = []error{fmt.Errorf("c.rc.MGet :%w", err)}
+		return
 	}
-
 	for index, val := range vals {
 		if val == nil {
 			notFound = append(notFound, usernames[index])
@@ -86,6 +87,7 @@ func (c *c) GetUserInfo(usernames []string) ( //nolint: nonamedreturns // TODO a
 
 		switch data := val.(type) {
 		case string:
+
 			var user github.User
 			e := json.Unmarshal([]byte(data), &user)
 			if e != nil {

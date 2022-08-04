@@ -49,7 +49,7 @@ func (s *CacheTestSuite) SetupSuite() {
 		return
 	}
 
-	redisClient, err := cache.NewRedisClient(config.RedisURL, config.RedisPassword)
+	redisClient, err := cache.NewRedisClient(config.RedisURL, config.RedisPasswordKey)
 	if err != nil {
 		logger.Sugar().Error(err)
 		return

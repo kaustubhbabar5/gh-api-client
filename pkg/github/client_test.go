@@ -38,7 +38,7 @@ func (s *GithubTestSuite) SetupSuite() {
 		Timeout: time.Duration(config.ReadTimeout) * time.Second,
 	}
 
-	s.ghClient = NewClient(httpClient, config.GithubAuthToken)
+	s.ghClient = NewClient(httpClient, config.GithubAuthTokenKey)
 }
 
 func TestGithubTestSuite(t *testing.T) {
@@ -61,11 +61,11 @@ func (s *GithubTestSuite) TestNewClient() {
 		Timeout: time.Duration(config.ReadTimeout) * time.Second,
 	}
 
-	githubClient := NewClient(httpClient, config.GithubAuthToken)
+	githubClient := NewClient(httpClient, config.GithubAuthTokenKey)
 
 	s.Equal(BaseURLString, githubClient.baseURL.String())
 
-	githubClient2 := NewClient(httpClient, config.GithubAuthToken)
+	githubClient2 := NewClient(httpClient, config.GithubAuthTokenKey)
 
 	if githubClient == githubClient2 {
 		s.Fail("both clients should differ, but they are same")

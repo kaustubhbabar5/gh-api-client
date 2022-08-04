@@ -3,16 +3,21 @@ package cache
 import (
 	"context"
 	"fmt"
+	"os"
+	"time"
 
 	"github.com/go-redis/redis/v8"
 )
 
 // returns a new redis cache.
-func NewRedisClient(address, password string) (*redis.Client, error) {
+func NewRedisClient(address, passwordKey string) (*redis.Client, error) {
 	redisClient := redis.NewClient(&redis.Options{
 		Addr:     address,
-		Password: password,
+		Password: os.Getenv(passwordKey),
 		DB:       0,
+		// TODO use config
+		WriteTimeout: 30 * time.Second,
+		ReadTimeout:  30 * time.Second,
 	})
 
 	ctx := context.Background()

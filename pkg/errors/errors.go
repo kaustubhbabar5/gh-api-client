@@ -1,6 +1,19 @@
 package errors
 
-import "fmt"
+import (
+	"encoding/json"
+	"fmt"
+)
+
+type JSONErrs []error
+
+func (e JSONErrs) MarshalJSON() ([]byte, error) {
+	res := make([]string, len(e))
+	for i, e := range e {
+		res[i] = e.Error()
+	}
+	return json.Marshal(res)
+}
 
 type NotFoundError struct {
 	Object  string

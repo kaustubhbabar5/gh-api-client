@@ -6,6 +6,7 @@ import (
 	"fmt"
 	"net/http"
 	"net/url"
+	"os"
 
 	cerrors "github.com/kaustubhbabar5/gh-api-client/pkg/errors"
 )
@@ -27,13 +28,13 @@ type client struct {
 
 // creates a new github client with given http.Client and config.
 // if http Client is nil it will create a new http.Client.
-func NewClient(httpClient *http.Client, authToken string) *client {
+func NewClient(httpClient *http.Client, authTokenKey string) *client {
 	if httpClient == nil {
 		httpClient = &http.Client{}
 	}
 
 	baseURL, _ := url.Parse(BaseURLString)
-	authToken = fmt.Sprintf("token %s", authToken)
+	authToken := fmt.Sprintf("token %v", os.Getenv(authTokenKey))
 
 	return &client{
 		httpClient,
