@@ -42,7 +42,7 @@ func TestServiceTestSuite(t *testing.T) {
 
 func (s *ServiceTestSuite) TestGetUsers() {
 	usernames := []string{"one", "two"}
-	expectedUsers := []github.User{
+	expectedUsers := github.Users{
 		{
 			Name:        "Kaustubh Babar",
 			Login:       "one",
@@ -61,7 +61,7 @@ func (s *ServiceTestSuite) TestGetUsers() {
 
 	s.gitHubClientMock.On("GetUsers", usernames).Return(expectedUsers, []string{}, nil)
 
-	s.userCacheMock.On("GetUserInfo", usernames).Return([]github.User{}, usernames, nil)
+	s.userCacheMock.On("GetUserInfo", usernames).Return(github.Users{}, usernames, nil)
 	s.userCacheMock.On("CacheUserInfo", expectedUsers, 2*time.Minute).Return(nil)
 
 	actualUsers, notFoundUsers, errs := s.service.GetUsers(usernames)
@@ -75,8 +75,8 @@ func (s *ServiceTestSuite) TestGetUsers() {
 func (s *ServiceTestSuite) TestGetUsersFail() {
 	usernames := []string{"three", "four"}
 
-	s.userCacheMock.On("GetUserInfo", usernames).Return([]github.User{}, usernames, nil)
-	s.gitHubClientMock.On("GetUsers", usernames).Return([]github.User{}, usernames, nil)
+	s.userCacheMock.On("GetUserInfo", usernames).Return(github.Users{}, usernames, nil)
+	s.gitHubClientMock.On("GetUsers", usernames).Return(github.Users{}, usernames, nil)
 
 	actualUsers, notFoundUsers, errs := s.service.GetUsers(usernames)
 	s.Empty(errs)

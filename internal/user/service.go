@@ -13,7 +13,14 @@ const (
 
 type Service interface {
 	// fetches users information by username
-	GetUsers(usernames []string) (users []github.User, notFoundUsers []string, errs []error)
+	GetUsers(usernames []string) (users github.Users, notFoundUsers []string, errs []error)
+
+	// fetches users information by username, sorted alphabetically by login case insensitive
+	GetUsersSorted(usernames []string) (
+		users github.Users,
+		notFoundUsers []string,
+		errs []error,
+	)
 }
 
 type service struct {
@@ -30,7 +37,7 @@ func NewService(logger *zap.Logger, userCache Cache, githubClient github.Client)
 // for the user info that is not cached it retrieves information from github API
 // returns back with  users, users that were not found on github and errors if any.
 func (s *service) GetUsers(usernames []string) ( //nolint: nonamedreturns // TODO: add directive
-	users []github.User,
+	users github.Users,
 	notFoundUsers []string,
 	errs []error,
 ) {
@@ -58,7 +65,17 @@ func (s *service) GetUsers(usernames []string) ( //nolint: nonamedreturns // TOD
 		s.logger.Warn("failed to cache User info", zap.Errors("errors", err))
 	}
 
-	// TODO: sort users by login alphabetically
+	return //nolint: nakedret // TODO: add directive
+}
+
+func (s *service) GetUsersSorted(usernames []string) ( //nolint: nonamedreturns // TODO: add directive
+	users github.Users,
+	notFoundUsers []string,
+	errs []error,
+) {
+	users, notFoundUsers, errs = s.GetUsers(usernames)
+
+	users.SortByLogin()
 
 	return //nolint: nakedret // TODO: add directive
 }

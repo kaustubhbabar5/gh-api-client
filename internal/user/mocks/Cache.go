@@ -15,11 +15,11 @@ type Cache struct {
 }
 
 // CacheUserInfo provides a mock function with given fields: users, duration
-func (_m *Cache) CacheUserInfo(users []github.User, duration time.Duration) []error {
+func (_m *Cache) CacheUserInfo(users github.Users, duration time.Duration) []error {
 	ret := _m.Called(users, duration)
 
 	var r0 []error
-	if rf, ok := ret.Get(0).(func([]github.User, time.Duration) []error); ok {
+	if rf, ok := ret.Get(0).(func(github.Users, time.Duration) []error); ok {
 		r0 = rf(users, duration)
 	} else {
 		if ret.Get(0) != nil {
@@ -31,15 +31,15 @@ func (_m *Cache) CacheUserInfo(users []github.User, duration time.Duration) []er
 }
 
 // GetUserInfo provides a mock function with given fields: usernames
-func (_m *Cache) GetUserInfo(usernames []string) ([]github.User, []string, []error) {
+func (_m *Cache) GetUserInfo(usernames []string) (github.Users, []string, []error) {
 	ret := _m.Called(usernames)
 
-	var r0 []github.User
-	if rf, ok := ret.Get(0).(func([]string) []github.User); ok {
+	var r0 github.Users
+	if rf, ok := ret.Get(0).(func([]string) github.Users); ok {
 		r0 = rf(usernames)
 	} else {
 		if ret.Get(0) != nil {
-			r0 = ret.Get(0).([]github.User)
+			r0 = ret.Get(0).(github.Users)
 		}
 	}
 

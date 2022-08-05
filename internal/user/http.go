@@ -69,7 +69,7 @@ func (h *Handler) GetUsers(w http.ResponseWriter, r *http.Request) {
 
 	usernames := req.Usernames
 
-	users, notFoundUsers, errs := h.userService.GetUsers(usernames)
+	users, notFoundUsers, errs := h.userService.GetUsersSorted(usernames)
 
 	if len(users) == 0 {
 		h.logger.Error("failed to fetch users", zap.Errors("errors", errs))

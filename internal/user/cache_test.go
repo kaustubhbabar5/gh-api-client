@@ -83,12 +83,12 @@ func TestCacheTestSuite(t *testing.T) {
 func (s *CacheTestSuite) TestCacheUserInfo() {
 	testCases := []struct {
 		testName  string
-		usernames []github.User
+		usernames github.Users
 		duration  time.Duration
 	}{
 		{
 			testName: "test01",
-			usernames: []github.User{
+			usernames: github.Users{
 				{
 					Name:        "Kaustubh Babar",
 					Login:       "kaustubhbabar5",

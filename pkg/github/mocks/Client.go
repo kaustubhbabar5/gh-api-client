@@ -34,15 +34,15 @@ func (_m *Client) GetUser(username string) (github.User, error) {
 }
 
 // GetUsers provides a mock function with given fields: usernames
-func (_m *Client) GetUsers(usernames []string) ([]github.User, []string, []error) {
+func (_m *Client) GetUsers(usernames []string) (github.Users, []string, []error) {
 	ret := _m.Called(usernames)
 
-	var r0 []github.User
-	if rf, ok := ret.Get(0).(func([]string) []github.User); ok {
+	var r0 github.Users
+	if rf, ok := ret.Get(0).(func([]string) github.Users); ok {
 		r0 = rf(usernames)
 	} else {
 		if ret.Get(0) != nil {
-			r0 = ret.Get(0).([]github.User)
+			r0 = ret.Get(0).(github.Users)
 		}
 	}
 

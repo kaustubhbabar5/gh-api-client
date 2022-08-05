@@ -18,10 +18,10 @@ const (
 type Cache interface {
 	// takes multiple users and cache data for give duration.
 	// returns back slice of usernames for which caching operation failed and error.
-	CacheUserInfo(users []github.User, duration time.Duration) []error
+	CacheUserInfo(users github.Users, duration time.Duration) []error
 	//
 	GetUserInfo(usernames []string) (
-		users []github.User,
+		users github.Users,
 		notFound []string,
 		errs []error,
 	)
@@ -36,7 +36,7 @@ func NewCache(logger *zap.Logger, cache *redis.Client) *c {
 	return &c{logger, cache}
 }
 
-func (c *c) CacheUserInfo(users []github.User, duration time.Duration) []error {
+func (c *c) CacheUserInfo(users github.Users, duration time.Duration) []error {
 	ctx := context.Background()
 	errs := make([]error, 0)
 
@@ -57,7 +57,7 @@ func (c *c) CacheUserInfo(users []github.User, duration time.Duration) []error {
 }
 
 func (c *c) GetUserInfo(usernames []string) ( //nolint: nonamedreturns // TODO add directive
-	users []github.User,
+	users github.Users,
 	notFound []string,
 	errs []error,
 ) {
@@ -66,7 +66,7 @@ func (c *c) GetUserInfo(usernames []string) ( //nolint: nonamedreturns // TODO a
 	redisKeys := make([]string, len(usernames))
 
 	notFound = make([]string, 0)
-	users = make([]github.User, 0)
+	users = make(github.Users, 0)
 	errs = make([]error, 0)
 
 	for i := range usernames {

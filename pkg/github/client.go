@@ -17,7 +17,7 @@ const (
 
 type Client interface {
 	GetUser(username string) (User, error)
-	GetUsers(usernames []string) (users []User, usersNotFound []string, errs []error)
+	GetUsers(usernames []string) (users Users, usersNotFound []string, errs []error)
 }
 
 type client struct {
@@ -81,13 +81,13 @@ func (c *client) GetUser(username string) (User, error) {
 
 // GetUsers returns information of multiple users by their usernames.
 func (c *client) GetUsers(usernames []string) ( //nolint:nonamedreturns // named returns serves as documentation here
-	users []User,
+	users Users,
 	usersNotFound []string,
 	errs []error,
 ) {
 	userCount := len(usernames)
 
-	users = make([]User, 0)
+	users = make(Users, 0)
 	usersNotFound = make([]string, 0)
 	errs = make([]error, 0)
 

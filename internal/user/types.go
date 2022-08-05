@@ -10,7 +10,7 @@ type GetUsersRequest struct {
 } // @name GetUsersRequest
 
 type GetUsersResponse struct {
-	Users         []github.User   `json:"users"`
+	Users         github.Users    `json:"users"`
 	NotFoundUsers []string        `json:"users_not_found"`
 	Errors        errors.JSONErrs `json:"errors"`
 } // @name GetUsersResponse
