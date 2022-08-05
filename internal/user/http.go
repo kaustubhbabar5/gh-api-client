@@ -22,12 +22,16 @@ func NewHandler(logger *zap.Logger, validator *validator.Validate, userService S
 	return &Handler{logger, validator, userService}
 }
 
-// swagger:route GET /users  GetUsers
-// Get Users information
-//
-// responses:
-//  500: InternalServerError
-//  200: GetUsers
+// GetUsers godoc
+// @Summary Get details of Users
+// @Description Get details of Users
+// @Tags users
+// @Accept  json
+// @Produce  json
+// @Param usernames body GetUsersRequest true "array of usernames"
+// @Success 200 {array} GetUsersResponse
+// @Failure      500
+// @Router /users [get].
 func (h *Handler) GetUsers(w http.ResponseWriter, r *http.Request) {
 	reqBody, err := ioutil.ReadAll(r.Body)
 	if err != nil {
@@ -66,13 +70,12 @@ func (h *Handler) GetUsers(w http.ResponseWriter, r *http.Request) {
 	usernames := req.Usernames
 
 	users, notFoundUsers, errs := h.userService.GetUsers(usernames)
-	// h.logger.Sugar().Info(users, errs, notFoundUsers)
+
 	if len(users) == 0 {
-		h.logger.Warn("failed to fetch users", zap.Errors("errors", errs))
+		h.logger.Error("failed to fetch users", zap.Errors("errors", errs))
 		chttp.WriteJSON(w, http.StatusInternalServerError, nil)
 		return
 	}
-
 	chttp.WriteJSON(w, http.StatusOK, GetUsersResponse{
 		Users:         users,
 		NotFoundUsers: notFoundUsers,

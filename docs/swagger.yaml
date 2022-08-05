@@ -1,0 +1,75 @@
+definitions:
+  GetUsersRequest:
+    properties:
+      usernames:
+        items:
+          maxLength: 39
+          minLength: 1
+          type: string
+        maxItems: 10
+        minItems: 1
+        type: array
+    required:
+    - usernames
+    type: object
+  GetUsersResponse:
+    properties:
+      errors:
+        items: {}
+        type: array
+      users:
+        items:
+          $ref: '#/definitions/User'
+        type: array
+      users_not_found:
+        items:
+          type: string
+        type: array
+    type: object
+  User:
+    properties:
+      company:
+        type: string
+      followers:
+        type: integer
+      login:
+        type: string
+      name:
+        type: string
+      public_repos:
+        type: integer
+    type: object
+info:
+  contact:
+    email: kaustubhbabar5@gmail.com
+    name: Kaustubh Babar
+  title: GitHub Users API
+  version: "1.0"
+paths:
+  /users:
+    get:
+      consumes:
+      - application/json
+      description: Get details of Users
+      parameters:
+      - description: array of usernames
+        in: body
+        name: usernames
+        required: true
+        schema:
+          $ref: '#/definitions/GetUsersRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/GetUsersResponse'
+            type: array
+        "500":
+          description: Internal Server Error
+      summary: Get details of Users
+      tags:
+      - users
+swagger: "2.0"

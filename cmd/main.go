@@ -9,6 +9,11 @@ import (
 	"go.uber.org/zap"
 )
 
+// @title           GitHub Users API
+// @version         1.0
+
+// @contact.name   Kaustubh Babar
+// @contact.email  kaustubhbabar5@gmail.com
 func main() {
 	logger, err := logger.NewProduction()
 	if err != nil {

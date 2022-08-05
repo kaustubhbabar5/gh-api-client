@@ -6,4 +6,4 @@ type User struct {
 	Company     string `json:"company,omitempty"`
 	Followers   int    `json:"followers,omitempty"`
 	PublicRepos int    `json:"public_repos,omitempty"`
-}
+} // @name User

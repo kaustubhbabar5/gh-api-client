@@ -7,9 +7,9 @@ import (
 
 type JSONErrs []error
 
-func (e JSONErrs) MarshalJSON() ([]byte, error) {
-	res := make([]string, len(e))
-	for i, e := range e {
+func (errs JSONErrs) MarshalJSON() ([]byte, error) {
+	res := make([]string, len(errs))
+	for i, e := range errs {
 		res[i] = e.Error()
 	}
 	return json.Marshal(res)
