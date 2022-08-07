@@ -26,6 +26,10 @@ This is an application which provides an API to retrieve detailed information ab
         -   if not Github API fails
             -   return partial users and `could not able to connect to Github API` for remaining Users 
 
+## Demo
+-   Hosted on Render: https://users-gh.onrender.com
+-   [API docs](https://users-gh.onrender.com/swagger/index.html)
+
 
 ## Start Up instructions
 -   make sure you have docker and docker-compose installed
